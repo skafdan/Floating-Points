@@ -63,7 +63,7 @@ if __name__ == "__main__":
     in_precision, out_precision = "", ""
 
     try:
-        # Get the input file.
+        # Get the input path.
         while os.path.isfile(in_path) == False:
             in_path = input("Please enter input file path: ")
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
                 "Please enter the input precision (single/double): ")
             in_precision = in_precision.lower()
 
-        # Get the output file.
+        # Get the output path.
         out_path = input("Please enter the output file path: ")
 
         # Get the output precision.
