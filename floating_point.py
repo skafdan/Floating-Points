@@ -42,7 +42,7 @@ def floating_point(in_path, in_precision, out_path, out_precision):
 
     # Attempt to open output file at out_path with write permission.
     try:
-        out_file = open(out_path, "w")
+        out_file = open(out_path, "w+")
     except PermissionError:
         raise InvalidFile(
             out_path, "Insufficient permission to write to file.")
@@ -74,8 +74,7 @@ if __name__ == "__main__":
             in_precision = in_precision.lower()
 
         # Get the output file.
-        while os.path.isfile(out_path) == False:
-            out_path = input("Please enter the output file path: ")
+        out_path = input("Please enter the output file path: ")
 
         # Get the output precision.
         while (out_precision != "single") and (out_precision != "double"):
