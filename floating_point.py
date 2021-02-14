@@ -1,5 +1,5 @@
 """
-Program that converts a IBM Hexadecimal Floating Point binary file to a 
+Program that converts a IBM Hexadecimal Floating Point binary file to a
 IEEE754 binary file.
 """
 __author__ = "Dan Skaf, Elijah J. Passmore, Finn Mountfort Will McKenzie"
@@ -37,7 +37,7 @@ class InvalidPrecision(ValueError):
 
 
 def hfp_single_to_float(input):
-    """Converts a single precision hexadecimal floating point to primitive 
+    """Converts a single precision hexadecimal floating point to primitive
     floating point.
 
     Args:
@@ -57,7 +57,7 @@ def hfp_single_to_float(input):
 
 
 def hfp_double_to_float(input):
-    """Converts a double precision hexadecimal floating point to primitive 
+    """Converts a double precision hexadecimal floating point to primitive
     floating point
 
     Args:
@@ -101,8 +101,8 @@ def get_value(string_fraction):
 
 
 def read_single_precision(in_path):
-    """Parses the single binary file into a hexadecimal string and then returns 
-    the primitive float value. 
+    """Parses the single binary file into a hexadecimal string and then returns
+    the primitive float value.
 
     Args:
         in_path (_io.BufferedReader): file reader of HFP binary file.
@@ -111,30 +111,34 @@ def read_single_precision(in_path):
     """
     try:
         length = 0
+        hex_str = ""
+        float_list = []
         # with open(in_path, "rb") as in_stream:
         with in_path as in_stream:
             while True:
                 word = in_stream.read(4)
+                if length > 0:
+                    hex_as_int = int(hex_str, 16)
+                    float_list.append(hfp_single_to_float(hex_as_int))
                 if word:
                     length += 1
-                    hexStr = ""
+                    hex_str = ""
                     for b in word:
                         if b == 0:
-                            hexStr += "00"
+                            hex_str += "00"
                         else:
-                            hexStr += hex(b)[2:]
+                            hex_str += hex(b)[2:]
                 else:
                     break
-        length = len(hexStr) * 4
-        hex_as_int = int(hexStr, 16)
-        return hfp_single_to_float(hex_as_int)
+
+        return float_list
     except Exception as e:
         print(e)
 
 
 def read_double_precision(in_path):
-    """Parses the double binary file into a hexadecimal string and then returns 
-    the primitive float value. 
+    """Parses the double binary file into a hexadecimal string and then returns
+    the primitive float value.
 
     Args:
         in_path (_io.BufferedReader): file reader of HFP binary file.
@@ -146,22 +150,22 @@ def read_double_precision(in_path):
             while True:
                 word = in_stream.read(8)
                 if word:
-                    hexStr = ""
+                    hex_str = ""
                     for b in word:
                         if b == 0:
-                            hexStr += "00"
+                            hex_str += "00"
                         else:
-                            hexStr += hex(b)[2:]
+                            hex_str += hex(b)[2:]
                 else:
                     break
-        hex_as_int = int(hexStr, 16)
+        hex_as_int = int(hex_str, 16)
         return hfp_double_to_float(hex_as_int)
     except Exception as e:
         print(e)
 
 
 def floating_point(in_path, in_precision, out_path, out_precision):
-    """Converts a IBM Hexadecimal floating point to a specified precision and 
+    """Converts a IBM Hexadecimal floating point to a specified precision and
     writes to specified file name and path.
 
     Args:
