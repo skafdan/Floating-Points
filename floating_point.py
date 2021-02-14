@@ -100,7 +100,7 @@ def get_value(string_fraction):
     return result
 
 
-def read_single_precision(in_path):
+def byte_to_float(in_path, precision):
     """Parses the single binary file into a hexadecimal string and then returns
     the primitive float value.
 
@@ -116,10 +116,13 @@ def read_single_precision(in_path):
         # with open(in_path, "rb") as in_stream:
         with in_path as in_stream:
             while True:
-                word = in_stream.read(4)
+                word = in_stream.read(precision)
                 if length > 0:
                     hex_as_int = int(hex_str, 16)
-                    float_list.append(hfp_single_to_float(hex_as_int))
+                    if precision == 4:
+                        float_list.append(hfp_single_to_float(hex_as_int))
+                    elif precision == 8:
+                        float_list.append(hfp_double_to_float(hex_as_int))
                 if word:
                     length += 1
                     hex_str = ""
@@ -132,34 +135,6 @@ def read_single_precision(in_path):
                     break
 
         return float_list
-    except Exception as e:
-        print(e)
-
-
-def read_double_precision(in_path):
-    """Parses the double binary file into a hexadecimal string and then returns
-    the primitive float value.
-
-    Args:
-        in_path (_io.BufferedReader): file reader of HFP binary file.
-    Returns:
-        (floating point) primitive float value.
-    """
-    try:
-        with in_path as in_stream:
-            while True:
-                word = in_stream.read(8)
-                if word:
-                    hex_str = ""
-                    for b in word:
-                        if b == 0:
-                            hex_str += "00"
-                        else:
-                            hex_str += hex(b)[2:]
-                else:
-                    break
-        hex_as_int = int(hex_str, 16)
-        return hfp_double_to_float(hex_as_int)
     except Exception as e:
         print(e)
 
@@ -186,9 +161,9 @@ def floating_point(in_path, in_precision, out_path, out_precision):
     try:
         in_file = open(in_path, "rb")
         if in_precision == "single":
-            intermFloat = read_single_precision(in_file)
+            intermFloat = byte_to_float(in_file, 4)
         else:
-            intermFloat = read_double_precision(in_file)
+            intermFloat = byte_to_float(in_file, 8)
     except PermissionError:
         raise InvalidFile(
             in_path, "Insufficient permission to read file.")
@@ -199,10 +174,13 @@ def floating_point(in_path, in_precision, out_path, out_precision):
     try:
         out_file = open(out_path, "wb")
         if out_precision == "single":
-            result = struct.pack('f', intermFloat)
+            for element in intermFloat:
+                result = struct.pack('>f', element)
+                out_file.write(result)
         else:
-            result = struct.pack('d', intermFloat)
-        out_file.write(result)
+            for element in intermFloat:
+                result = struct.pack('>d', element)
+                out_file.write(result)
         print("Created " + out_precision + " IEEE754 file at " + out_path)
     except PermissionError:
         raise InvalidFile(
