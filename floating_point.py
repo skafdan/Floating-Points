@@ -1,3 +1,10 @@
+"""
+Program that converts a IBM Hexadecimal Floating Point binary file to a 
+IEEE754 binary file.
+"""
+__author__ = "Dan Skaf, Elijah J. Passmore, Finn Mountfort Will McKenzie"
+__license__ = "GPL-3.0"
+
 import os
 import sys
 import struct
@@ -30,8 +37,15 @@ class InvalidPrecision(ValueError):
 
 
 def hfp_single_to_float(input):
-    binaryString = format(input, "032b")
+    """Converts a single precision hexadecimal floating point to primitive 
+    floating point.
 
+    Args:
+        input (int): int version of hexadecimal string.
+    Returns:
+        (float) Converted hfp.
+    """
+    binaryString = format(input, "032b")
     signStr = binaryString[0]
     exponentStr = binaryString[1:8]
     mantissaStr = "0." + binaryString[8:]
@@ -43,8 +57,15 @@ def hfp_single_to_float(input):
 
 
 def hfp_double_to_float(input):
-    binaryString = format(input, "064b")
+    """Converts a double precision hexadecimal floating point to primitive 
+    floating point
 
+    Args:
+        input (int): int version of hexadecimal string
+    Returns:
+        (float) Converted hfp.
+    """
+    binaryString = format(input, "064b")
     signStr = binaryString[0]
     exponentStr = binaryString[1:8]
     mantisaStr = "0." + binaryString[8:]
@@ -56,6 +77,13 @@ def hfp_double_to_float(input):
 
 
 def get_value(string_fraction):
+    """Normalizes and returns the float value of a mantissa.
+
+    Args:
+        string_fraction (string): binary string of mantissa.
+    Returns:
+        (float) Converted mantissa.
+    """
     result = 0.0
     length = len(string_fraction)
     i = 0
@@ -73,6 +101,14 @@ def get_value(string_fraction):
 
 
 def read_single_precision(in_path):
+    """Parses the single binary file into a hexadecimal string and then returns 
+    the primitive float value. 
+
+    Args:
+        in_path (_io.BufferedReader): file reader of HFP binary file.
+    Returns:
+        (floating point) primitive float value.
+    """
     try:
         length = 0
         # with open(in_path, "rb") as in_stream:
@@ -97,6 +133,14 @@ def read_single_precision(in_path):
 
 
 def read_double_precision(in_path):
+    """Parses the double binary file into a hexadecimal string and then returns 
+    the primitive float value. 
+
+    Args:
+        in_path (_io.BufferedReader): file reader of HFP binary file.
+    Returns:
+        (floating point) primitive float value.
+    """
     try:
         with in_path as in_stream:
             while True:
@@ -117,6 +161,15 @@ def read_double_precision(in_path):
 
 
 def floating_point(in_path, in_precision, out_path, out_precision):
+    """Converts a IBM Hexadecimal floating point to a specified precision and 
+    writes to specified file name and path.
+
+    Args:
+        in_path (string): path to IBM file.
+        in_precision (string): precision of IBM file.
+        out_path (string): path to output file.
+        out_precision (string): precision of IEEE754 file.
+    """
     in_file, out_file = None, None
 
     # Validate in_precision and out_precision.
