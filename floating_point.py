@@ -53,7 +53,7 @@ def hfp_single_to_float(input):
     sign = int(signStr, 2)
     mantissa = get_value(mantissaStr)
 
-    return (16 ** (exponent - 64) * mantissa * (-1)**(sign))
+    return (float(16) ** (float(exponent - 64)) * float(mantissa) * float((-1)**(sign)))
 
 
 def hfp_double_to_float(input):
@@ -73,7 +73,7 @@ def hfp_double_to_float(input):
     sign = int(signStr, 2)
     mantissa = get_value(mantisaStr)
 
-    return (16 ** (exponent - 64) * mantissa * (-1)**(sign))
+    return (16 ** (float(exponent - 64)) * float(mantissa) * (-1)**(float(sign)))
 
 
 def get_value(string_fraction):
@@ -151,6 +151,11 @@ def floating_point(in_path, in_precision, out_path, out_precision):
     """
     in_file, out_file = None, None
 
+    posInf = hfp_single_to_float(int("7F800000",16))
+    negInf = hfp_single_to_float(int("FF800000",16))
+    negZero = hfp_double_to_float(int("01834A0000000000",16))
+    posZero = hfp_double_to_float(int("81834A0000000000",16))
+
     # Validate in_precision and out_precision.
     if (in_precision != "single") and (in_precision != "double"):
         raise InvalidPrecision(in_precision)
@@ -172,11 +177,22 @@ def floating_point(in_path, in_precision, out_path, out_precision):
 
     # Attempt to open output file at out_path with write permission.
     try:
+        infHexStr = "7F800000"
+        negInfHexStr = "FF800000"
         out_file = open(out_path, "wb")
         if out_precision == "single":
             for element in intermFloat:
-                result = struct.pack('>f', element)
-                out_file.write(result)
+                if element >= posInf:
+                    out_file.write(bytes.fromhex(infHexStr))
+                elif element <= negInf:
+                    out_file.write(bytes.fromhex(negInfHexStr)) 
+                #elif element == negZero:
+                #    out_file.write(bytes.fromhex("80000000"))
+                #elif element == posZero:
+                #    out_file.write(bytes.fromhex("00000000"))
+                else:
+                    result = struct.pack('>f', element)
+                    out_file.write(result)
         else:
             for element in intermFloat:
                 result = struct.pack('>d', element)
