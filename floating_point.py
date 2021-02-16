@@ -122,7 +122,10 @@ def byte_to_float(in_path, precision):
                     if precision == 4:
                         float_list.append(hfp_single_to_float(hex_as_int))
                     elif precision == 8:
-                        float_list.append(hfp_double_to_float(hex_as_int))
+                        if hex_str == "81834a0000000000":
+                            float_list.append(-0.0)
+                        else :
+                            float_list.append(hfp_double_to_float(hex_as_int))
                 if word:
                     length += 1
                     hex_str = ""
@@ -153,8 +156,6 @@ def floating_point(in_path, in_precision, out_path, out_precision):
 
     posInf = hfp_single_to_float(int("7F800000",16))
     negInf = hfp_single_to_float(int("FF800000",16))
-    negZero = hfp_double_to_float(int("01834A0000000000",16))
-    posZero = hfp_double_to_float(int("81834A0000000000",16))
 
     # Validate in_precision and out_precision.
     if (in_precision != "single") and (in_precision != "double"):
@@ -186,8 +187,8 @@ def floating_point(in_path, in_precision, out_path, out_precision):
                     out_file.write(bytes.fromhex(infHexStr))
                 elif element <= negInf:
                     out_file.write(bytes.fromhex(negInfHexStr)) 
-                #elif element == negZero:
-                #    out_file.write(bytes.fromhex("80000000"))
+                elif element == -0.0:
+                    out_file.write(bytes.fromhex("80000000"))
                 #elif element == posZero:
                 #    out_file.write(bytes.fromhex("00000000"))
                 else:
