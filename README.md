@@ -3,8 +3,10 @@ A python program that converts a IBM Hexadecimal Floating Point binary file to I
 
 # Author 
 Dan Skaf
-Elijah Passmore  
 
+Elijah Passmore
+
+## Dependencies 
 Requires latest `python 3` package to run
 ## Usage 
 `cd` into directory of program and run`$ python3 floating-point.py`  then follow prompts to enter file and precision.
