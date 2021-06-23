@@ -1,6 +1,10 @@
 # Floating point
 A python program that converts a IBM Hexadecimal Floating Point binary file to IEEE754 to binary file. 
 
+# Author 
+Dan Skaf
+Elijah Passmore  
+
 Requires latest `python 3` package to run
 ## Usage 
 `cd` into directory of program and run`$ python3 floating-point.py`  then follow prompts to enter file and precision.
